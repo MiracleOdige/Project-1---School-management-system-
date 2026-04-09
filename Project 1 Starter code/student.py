@@ -26,9 +26,16 @@ class Student:
         Raises:
             ValueError: If any field is empty or email format is invalid.
         """
-        # TODO: Validate that no field is empty.
-        # TODO: Validate email format (must contain '@' and '.').
-        # TODO: Assign attributes and initialise an empty grades dict.
+        if not student_id or not name or not email:
+            raise ValueError("invalid entry.")
+
+        if "@" not in email or "." not in email:
+            raise ValueError("Invalid email.")
+
+        self.student_id = student_id
+        self.name = name
+        self.email = email
+        self.grades = {}
         pass
 
     def add_grade(self, module, score):
@@ -42,9 +49,14 @@ class Student:
         Raises:
             InvalidGradeError: If score is not between 0 and 100.
         """
-        # TODO: Validate score is a number and in range 0-100.
-        # TODO: Add to self.grades dict.
-        # TODO: Log the grade addition at DEBUG level.
+        if (score != (int, float)) or score < 0 or score > 100:
+            raise InvalidGradeError("grade must be between 0 and 100.")
+
+            self.grades[module] = score
+
+            logger.debug(
+                f"Added grade {score} for module '{module}' to student {self.student_id}"
+            )
         pass
 
     def get_average(self):
@@ -54,24 +66,41 @@ class Student:
         Returns:
             float: The mean of all recorded grades, or 0.0 if none.
         """
-        # TODO: Use sum() and len() to compute the average.
-        # Hint: Handle the case where the student has no grades.
-        pass
+        if len(self.grades) == 0:
+            return 0.0
+
+        return sum(self.grades.values()) / len(self.grades)
+
+    pass
 
     def __str__(self):
         """Return a formatted string representation of the student."""
-        # TODO: Use an f-string to return something like:
-        #       "[STU001] Jane Smith (jane@email.com) - 3 module(s) - Avg: 82.5%"
-        pass
+        avg = self.get_average()
+        module_count = len(self.grades)
+
+        return f"[{self.student_id}] {self.name} ({self.email}) - {module_count} module(s) - Avg: {avg:.1f}%"
+
+    pass
 
     def to_dict(self):
         """Convert to dictionary for JSON serialisation."""
-        # TODO: Return a dict with keys: student_id, name, email, grades
-        pass
+        return {
+            "student_id": self.student_id,
+            "name": self.name,
+            "email": self.email,
+            "grades": self.grades,
+        }
+
+    pass
 
     @classmethod
     def from_dict(cls, data):
         """Create a Student instance from a dictionary."""
-        # TODO: Create a Student, loop through data["grades"]
-        #       and call add_grade() for each.
-        pass
+        student = cls(data["student_id"], data["name"], data["email"])
+
+        for module, score in data.get("grades", {}).items():
+            student.add_grade(module, score)
+
+        return student
+
+    pass
