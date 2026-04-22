@@ -36,7 +36,6 @@ class Student:
         self.name = name
         self.email = email
         self.grades = {}
-        pass
 
     def add_grade(self, module, score):
         """
@@ -57,7 +56,6 @@ class Student:
             logger.debug(
                 f"Added grade {score} for module '{module}' to student {self.student_id}"
             )
-        pass
 
     def get_average(self):
         """
@@ -71,16 +69,12 @@ class Student:
 
         return sum(self.grades.values()) / len(self.grades)
 
-    pass
-
     def __str__(self):
         """Return a formatted string representation of the student."""
         avg = self.get_average()
         module_count = len(self.grades)
 
         return f"[{self.student_id}] {self.name} ({self.email}) - {module_count} module(s) - Avg: {avg:.1f}%"
-
-    pass
 
     def to_dict(self):
         """Convert to dictionary for JSON serialisation."""
@@ -91,8 +85,6 @@ class Student:
             "grades": self.grades,
         }
 
-    pass
-
     @classmethod
     def from_dict(cls, data):
         """Create a Student instance from a dictionary."""
@@ -102,5 +94,3 @@ class Student:
             student.add_grade(module, score)
 
         return student
-
-    pass
