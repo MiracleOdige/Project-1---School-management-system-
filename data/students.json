@@ -1,0 +1,18 @@
+[
+    {
+        "student_id": "002",
+        "name": "Korede",
+        "email": "korede@gmail.com",
+        "grades": {
+            "physics": 85.0
+        }
+    },
+    {
+        "student_id": "003",
+        "name": "Miracle",
+        "email": "miraclelodige@gmail.com",
+        "grades": {
+            "physics": 40.0
+        }
+    }
+]

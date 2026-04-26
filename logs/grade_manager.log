@@ -1,0 +1,21 @@
+2026-04-25 07:50:19,935 - GradeManager - WARNING - Data file not found. Starting fresh.
+2026-04-25 08:32:11,645 - GradeManager - WARNING - Data file not found. Starting fresh.
+2026-04-25 08:32:48,891 - GradeManager - ERROR - Invalid email.
+2026-04-25 08:41:48,112 - GradeManager - ERROR - Invalid email.
+2026-04-25 08:42:01,715 - GradeManager - ERROR - Student with ID 001 not found.
+2026-04-25 08:49:09,811 - GradeManager - ERROR - Student with ID 001 not found.
+2026-04-25 08:56:31,683 - GradeManager - INFO - Added student: Richard (001)
+2026-04-25 08:56:59,126 - GradeManager - INFO - Added student: Korede (002)
+2026-04-25 08:57:26,044 - GradeManager - INFO - Added student: Emmanuel (003)
+2026-04-25 08:58:05,704 - GradeManager - INFO - Added student: Lami (004)
+2026-04-25 09:00:40,459 - GradeManager - ERROR - grade must be between 0 and 100.
+2026-04-25 09:01:19,205 - GradeManager - ERROR - grade must be between 0 and 100.
+2026-04-25 09:06:29,855 - GradeManager - ERROR - grade must be between 0 and 100.
+2026-04-25 09:08:07,710 - GradeManager - WARNING - Data file not found. Starting fresh.
+2026-04-25 09:09:01,397 - GradeManager - INFO - Added student: Richard (001)
+2026-04-25 09:10:30,957 - GradeManager - INFO - Added student: Korede (002)
+2026-04-25 09:11:49,269 - GradeManager - INFO - Removed student: Richard (001)
+2026-04-25 09:12:35,509 - GradeManager - INFO - Added student: Miracle (003)
+2026-04-25 09:13:21,333 - GradeManager - ERROR - Student with ID 004 not found.
+2026-04-25 09:17:05,337 - GradeManager - INFO - Student data saved successfully.
+2026-04-25 09:18:13,552 - GradeManager - INFO - Student data loaded successfully.
