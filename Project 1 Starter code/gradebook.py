@@ -13,96 +13,145 @@ logger = logging.getLogger("GradeManager")
 
 
 class GradeBook:
-    """
-    Manages a collection of Student objects.
-
-    Attributes:
-        students (dict): Maps student_id to Student objects.
-        data_file (str): Path to the JSON file for persistence.
-    """
 
     def __init__(self, data_file="data/students.json"):
         self.students = {}
         self.data_file = data_file
-        # TODO: Call self.load_data() to restore saved students.
+        self.load_data()
 
     def add_student(self, student):
-        """
-        Add a student to the grade book.
 
-        Raises:
-            DuplicateStudentError: If a student with the same ID exists.
-        """
-        # TODO: Check for duplicate ID, add to self.students, log.
-        pass
+        if student.student_id in self.students:
+            raise DuplicateStudentError(
+                f"Student with ID {student.student_id} already exists."
+            )
+
+        self.students[student.student_id] = student
+        logger.info(f"Added student: {student.name} ({student.student_id})")
 
     def remove_student(self, student_id):
-        """
-        Remove a student by their ID.
 
-        Raises:
-            StudentNotFoundError: If no student with that ID exists.
-        """
-        # TODO: Implement with error handling.
-        pass
+        if student_id not in self.students:
+            raise StudentNotFoundError(f"Student with ID {student_id} not found.")
+
+        removed = self.students.pop(student_id)
+        logger.info(f"Removed student: {removed.name} ({student_id})")
 
     def find_student(self, student_id):
-        """
-        Look up a student by ID.
 
-        Raises:
-            StudentNotFoundError: If the student is not found.
-        """
-        # TODO: Return the student or raise StudentNotFoundError.
-        pass
+        if student_id not in self.students:
+            raise StudentNotFoundError(f"Student with ID {student_id} not found.")
+
+        return self.students[student_id]
 
     def get_all_students(self):
-        """Return a list of all students."""
-        # TODO: Return list(self.students.values())
-        pass
+
+        return list(self.students.values())
 
     def save_data(self):
-        """Save all student data to JSON."""
-        # TODO: Convert each student to dict, write JSON.
-        # TODO: Wrap in try/except for I/O errors.
-        pass
+
+        try:
+            os.makedirs(os.path.dirname(self.data_file), exist_ok=True)
+
+            data = [student.to_dict() for student in self.students.values()]
+
+            with open(self.data_file, "w", encoding="utf-8") as file:
+                json.dump(data, file, indent=4)
+
+            logger.info("Student data saved successfully.")
+
+        except OSError as e:
+            logger.error(f"Error saving data: {e}")
 
     def load_data(self):
-        """Load student data from JSON."""
-        # TODO: Check if file exists, read JSON, create Students.
-        # TODO: Handle FileNotFoundError, json.JSONDecodeError.
-        pass
+
+        try:
+            if not os.path.exists(self.data_file):
+                logger.warning("Data file not found. Starting fresh.")
+                return
+
+            with open(self.data_file, "r", encoding="utf-8") as file:
+                data = json.load(file)
+
+            for student_data in data:
+                student = Student.from_dict(student_data)
+                self.students[student.student_id] = student
+
+            logger.info("Student data loaded successfully.")
+
+        except FileNotFoundError:
+            logger.warning("Data file not found.")
+        except json.JSONDecodeError:
+            logger.error("Error decoding JSON data.")
 
 
 class ReportGenerator(GradeBook):
-    """Extends GradeBook with reporting capabilities."""
 
     def class_summary(self):
-        """Print a summary of all students with their averages."""
-        # TODO: Loop through students, print formatted table.
-        # Hint: Use a list comprehension to collect averages.
-        pass
+
+        print("\nCLASS SUMMARY")
+        print("-" * 50)
+        print(f"{'ID':<10}{'Name':<20}{'Average':<10}")
+        print("-" * 50)
+
+        averages = [student.calculate_average() for student in self.students.values()]
+
+        for student in self.students.values():
+            print(
+                f"{student.student_id:<10}"
+                f"{student.name:<20}"
+                f"{student.calculate_average():<10.2f}"
+            )
+
+        if averages:
+            print("-" * 50)
+            print(f"Class Average: {sum(averages) / len(averages):.2f}")
 
     def at_risk_report(self, threshold=40):
-        """
-        Identify students below the given threshold.
 
-        Returns:
-            list: Students whose average falls below the threshold.
+        at_risk = [
+            student
+            for student in self.students.values()
+            if student.calculate_average() < threshold
+        ]
 
-        Hint: Use a list comprehension to filter.
-        """
-        # TODO: Filter students, print report, return list.
-        pass
+        print(f"\nAT RISK STUDENTS (Below {threshold})")
+        print("-" * 50)
+
+        for student in at_risk:
+            print(
+                f"{student.student_id} - {student.name} "
+                f"({student.calculate_average():.2f})"
+            )
+
+        return at_risk
 
     def module_stats(self, module_name):
-        """
-        Calculate statistics for a specific module.
 
-        Returns:
-            dict: Contains 'average', 'highest', 'lowest', 'num_students'.
+        scores = [
+            student.grades[module_name]
+            for student in self.students.values()
+            if module_name in student.grades
+        ]
 
-        Hint: Use a comprehension to extract scores for the module.
-        """
-        # TODO: Gather scores, compute stats, print and return.
-        pass
+        if not scores:
+            print(f"No scores found for module: {module_name}")
+            return {}
+
+        stats = {
+            "average": sum(scores) / len(scores),
+            "highest": max(scores),
+            "lowest": min(scores),
+            "num_students": len(scores),
+        }
+
+        print(f"\nMODULE STATS: {module_name}")
+        print("-" * 50)
+        for key, value in stats.items():
+            print(
+                f"{key.capitalize()}: {value:.2f}"
+                if isinstance(value, float)
+                else f"{key.capitalize()}: {value}"
+            )
+
+        return stats
